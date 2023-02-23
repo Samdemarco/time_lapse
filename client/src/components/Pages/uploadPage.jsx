@@ -18,8 +18,10 @@ function UploadImage() {
   const  { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const isLocal = process.env.NODE_ENV === 'development'
-  const url = isLocal ? 'http://localhost:3001/api' : '/api'
+//   const isLocal = process.env.NODE_ENV === 'development'
+//   const url = isLocal ? 'http://localhost:3001/api' : '/api'
+  const url = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api';
+
 
   const handleImageChange = (event) => {
     const selectedImage = event.target.files[0];
