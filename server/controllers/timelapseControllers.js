@@ -1,7 +1,7 @@
-import Timelapse from '../models/Timelapse.js';
-import Singlefile from '../models/Singlefile.js';
-import Project from '../models/Project.js';
-import User from '../models/User.js';
+import Timelapse from '../../models/Timelapse.js';
+import Singlefile from '../../models/Singlefile.js';
+import Project from '../../models/Project.js';
+import User from '../../models/User.js';
 import { Gif } from 'make-a-gif';
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
@@ -9,9 +9,10 @@ import fs from 'fs/promises';
 import * as fss from 'fs';
 import { Buffer } from 'node:buffer';
 import fetch from 'node-fetch';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
+const cwd = process.cwd();
 
 // likely for dashboard
 export const getAllTimelapses = async (req, res) => {
@@ -23,8 +24,7 @@ export const getAllTimelapses = async (req, res) => {
   }
 }
 
-export const getSingleTimelapse = async (req, res) => {.1
-
+export const getSingleTimelapse = async (req, res) => {
   try {
     const { id } = req.params
     const timelapseData = await Timelapse.findOne({ _id: id })
@@ -49,7 +49,7 @@ export const createTimelapse = async (req, res) => {
     })
 
     const generateBuffer = fileNames.map(fileName => {
-      const file = fss.readFileSync(`./uploads/${fileName}`)
+      const file = fss.readFileSync(join(cwd, `./uploads/${fileName}`))
       return {
         src: Buffer.from(file)
       }
@@ -67,7 +67,7 @@ export const createTimelapse = async (req, res) => {
 
     //Writes the gif in this folder
     const gifName = project.name.replace(/\s+/g, '');
-    await fs.writeFile(join(__dirname, `../gif/${gifName}.gif`), Render)
+    await fs.writeFile(join(cwd, `./gif/${gifName}.gif`), Render)
 
     const timelapseFile = new Timelapse({
       name: project.name,
